@@ -18,9 +18,14 @@ This is a Wix Clone build using various technologies to illustrate how easy it i
 
 - `git clone` the project
 - Run `composer install` inside `src` directory
-- Create `.db` & `dist` directory in the root
+- Run to create dist directories  `mkdir dist && mkdir dist/host && mkdir dist/client`
 - Run `docker-compose up`
 - Run the following command to sync files between src and dist
 
-```fswatch -o src | xargs -n1 -I{} rsync -a src/ dist/plugins/wpcs-woo-subscriptions```
+```shell
+fswatch -o src/wix-host | xargs -n1 -I{} rsync -a src/wix-host dist/host/plugins
+```
 
+```shell
+fswatch -o src/wix-client | xargs -n1 -I{} rsync -a src/wix-client dist/client/plugins
+```

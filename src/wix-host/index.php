@@ -11,8 +11,8 @@ use WPCSWooSubscriptions\Core\WooCommerceMetaBoxes;
  * @version 1.0.0
  */
 /*
-Plugin Name: WPCS WooCommerce Subscriptions
-Plugin URI: https://github.com/abduvik/wp-shopify-clone
+Plugin Name: Wix-Clone Host
+Plugin URI: https://github.com/abduvik/wp-wix-clone
 Description: This plugin is used to create tenants on WPCS.io with support of WordPress, WooCommerce and YITH Subscriptions
 Author: Abdu Tawfik
 Version: 1.0.0
