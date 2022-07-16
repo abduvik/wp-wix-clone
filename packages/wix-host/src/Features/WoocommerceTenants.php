@@ -1,9 +1,11 @@
 <?php
-namespace WPCSWooSubscriptions\Core;
 
-class WooCommerceMetaBoxes {
-    private VersionsService $versionsService;
+namespace WixCloneHost\Features;
+
+class WoocommerceTenants
+{
     public const WPCS_PRODUCT_VERSION = 'WPCS_PRODUCT_VERSION';
+    private VersionsService $versionsService;
 
     public function __construct(VersionsService $versionsService)
     {

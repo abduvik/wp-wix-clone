@@ -1,46 +1,23 @@
 <?php
 
-namespace WPCSWooSubscriptions\Core;
-
 use WPCS\API\CreateTenantRequest;
 use WPCS\API\DeleteTenantRequest;
 use WPCS\API\GetTenantsRequest;
+use WPCSWooSubscriptions\Core\TenantsSubscriptionController;
 
-class TenantsSubscriptionController
+class TenantsSubscription
 {
-    public const WPCS_WEBSITE_NAME = 'WPCS_WEBSITE_NAME';
-
     public function __construct()
     {
-        add_filter('woocommerce_checkout_fields', [$this, 'render_wpcs_checkout_fields']);
-        add_action('woocommerce_checkout_update_order_meta', [$this, 'add_wpcs_checkout_fields']);
-
-
         add_action('wps_sfw_after_created_subscription', [$this, 'create_tenant_when_subscription_created'], 10, 2);
 
 //        add_action('wps_sfw_subscription_cancel', [$this, 'remove_tenant_when_subscription_expired']);
         add_action('wps_sfw_expire_subscription_scheduler', [$this, 'remove_tenant_when_subscription_expired']);
     }
 
-    public function render_wpcs_checkout_fields($fields)
-    {
-        $fields['billing'][TenantsSubscriptionController::WPCS_WEBSITE_NAME] = [
-            'label' => 'Website Name',
-            'required' => true,
-            'priority' => 20,
-        ];
-
-        return $fields;
-    }
-
-    function add_wpcs_checkout_fields($order_id)
-    {
-        update_post_meta($order_id, TenantsSubscriptionController::WPCS_WEBSITE_NAME, sanitize_text_field($_POST[TenantsSubscriptionController::WPCS_WEBSITE_NAME]));
-    }
-
     public function create_tenant_when_subscription_created($subscription_id, $order_id)
     {
-        $order = new \WC_Order($order_id);
+        $order = new WC_Order($order_id);
         $product = reset($order->get_items());
         $wpcs_version_id = get_post_meta($product->get_product_id(), WooCommerceMetaBoxes::WPCS_PRODUCT_VERSION, true);
         $websiteName = get_post_meta($order_id, TenantsSubscriptionController::WPCS_WEBSITE_NAME, true);

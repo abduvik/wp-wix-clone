@@ -1,8 +1,8 @@
 <?php
 
-namespace WPCSWooSubscriptions\Core;
+namespace WixCloneHost\Features;
 
-class WPCSSettingsPage
+class WPCSAdminSettings
 {
     public function __construct()
     {
@@ -12,7 +12,14 @@ class WPCSSettingsPage
 
     public function add_wpcs_admin_page()
     {
-        add_menu_page('WPCS.io', 'WPCS.io', 'manage_options', 'wpcs-admin', [$this, 'render_wpcs_admin_page'], 'dashicons-networking', 10);
+        add_menu_page(
+            'WPCS.io',
+            'WPCS.io',
+            'manage_options',
+            'wpcs-admin',
+            [$this, 'render_wpcs_admin_page'],
+            'dashicons-networking',
+            10);
     }
 
     public function render_wpcs_admin_page()
