@@ -1,0 +1,24 @@
+{
+    "name": "abduvik/wix-clone-client",
+    "description": "WordPress plugin to communicate with Wix-Clone Host",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "WixCloneClient\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "abduvik",
+            "email": "contact@abdu.dev"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}

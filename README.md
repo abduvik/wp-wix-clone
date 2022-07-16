@@ -23,9 +23,9 @@ This is a Wix Clone build using various technologies to illustrate how easy it i
 - Run the following command to sync files between src and dist
 
 ```shell
-fswatch -o src/wix-host | xargs -n1 -I{} rsync -a src/wix-host dist/host/plugins
+fswatch -o packages/wix-host | xargs -n1 -I{} rsync -a packages/wix-host dist/host/plugins
 ```
 
 ```shell
-fswatch -o src/wix-client | xargs -n1 -I{} rsync -a src/wix-client dist/client/plugins
+fswatch -o packages/wix-client | xargs -n1 -I{} rsync -a packages/wix-client dist/client/plugins
 ```

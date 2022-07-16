@@ -1,13 +1,13 @@
 <?php
 
-namespace WPCSWooSubscriptions\Core;
+namespace WixCloneClient\Core;
 
-class DecryptionService {
-    public static function verify($publicKey, $data){
+class DecryptionService
+{
+    public static function decrypt($public_key, $data)
+    {
+        openssl_private_decrypt($data, $decrypted, $public_key);
 
-    }
-
-    public static function decrypt($publicKey, $data){
-
+        return $decrypted;
     }
 }
