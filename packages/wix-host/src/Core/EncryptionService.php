@@ -22,7 +22,7 @@ class EncryptionService
 
     public function encrypt($private_key, $data)
     {
-        openssl_private_encrypt(json_encode($data), $encrypted, $private_key);
+        openssl_private_encrypt($data, $encrypted, $private_key);
 
         return $encrypted;
     }

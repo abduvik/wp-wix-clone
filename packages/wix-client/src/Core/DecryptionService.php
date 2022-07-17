@@ -4,9 +4,9 @@ namespace WixCloneClient\Core;
 
 class DecryptionService
 {
-    public static function decrypt($public_key, $data)
+    public function decrypt($public_key, $data)
     {
-        openssl_private_decrypt($data, $decrypted, $public_key);
+        openssl_public_decrypt($data, $decrypted, $public_key);
 
         return $decrypted;
     }

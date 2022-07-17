@@ -39,13 +39,11 @@ class SingleLogin
             'email' => $email
         ];
 
-        $token = $this->encryptionService->encrypt($private_key, $login_data);
-
-
-        $loginLink = 'https://' . $domain . "/wp-json/wpcs/v1/single_login/verify?token=" . $token;
+        $token = $this->encryptionService->encrypt($private_key, json_encode($login_data));
+        $token_encoded = urlencode(base64_encode($token));
+        $loginLink = 'https://' . $domain . "/wp-json/wpcs/v1/single_login/verify?token=" . $token_encoded;
 
         wp_redirect($loginLink);
-
         exit();
     }
 }
