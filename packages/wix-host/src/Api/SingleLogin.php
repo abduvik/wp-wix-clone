@@ -2,6 +2,7 @@
 
 namespace WixCloneHost\Api;
 
+use WC_Order;
 use WixCloneHost\Core\EncryptionService;
 use WixCloneHost\Core\WPCSTenant;
 use WP_REST_Request;
@@ -24,7 +25,19 @@ class SingleLogin
         register_rest_route(static::$NAMESPACE, '/tenant/single_login', array(
             'methods' => 'GET',
             'callback' => [$this, 'generate_single_login_link'],
+            'permission_callback' => [$this, 'guard_generate_single_login_link']
         ));
+    }
+
+    public function guard_generate_single_login_link(WP_REST_Request $request)
+    {
+        $subscription_id = $request->get_param('subscription_id');
+        $login_email = $request->get_param('email');
+        $get_order_id = get_post_meta($subscription_id, 'wps_parent_order', true);
+        $order = new WC_Order($get_order_id);
+        $order_email = $order->get_billing_email();
+
+        return $login_email === $order_email;
     }
 
     public function generate_single_login_link(WP_REST_Request $request)
