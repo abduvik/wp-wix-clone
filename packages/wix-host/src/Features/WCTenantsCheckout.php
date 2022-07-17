@@ -1,10 +1,11 @@
 <?php
+
 namespace WixCloneHost\Features;
 
-class WCTenantsCheckout {
-    public const WPCS_WEBSITE_NAME_META = 'WPCS_WEBSITE_NAME_META';
-    public const WPCS_DOMAIN_NAME_META = 'WPCS_DOMAIN_NAME_META';
+use WixCloneHost\Core\WPCSTenant;
 
+class WCTenantsCheckout
+{
     public function __construct()
     {
         add_filter('woocommerce_checkout_fields', [$this, 'render_wpcs_checkout_fields']);
@@ -30,7 +31,7 @@ class WCTenantsCheckout {
 
     function add_wpcs_checkout_fields($order_id)
     {
-        update_post_meta($order_id, static::WPCS_WEBSITE_NAME_META, sanitize_text_field($_POST[static::WPCS_WEBSITE_NAME_META]));
-        update_post_meta($order_id, static::WPCS_DOMAIN_NAME_META, sanitize_text_field($_POST[static::WPCS_DOMAIN_NAME_META]));
+        update_post_meta($order_id, WPCSTenant::WPCS_WEBSITE_NAME_META, sanitize_text_field($_POST[WPCSTenant::WPCS_WEBSITE_NAME_META]));
+        update_post_meta($order_id, WPCSTenant::WPCS_DOMAIN_NAME_META, sanitize_text_field($_POST[WPCSTenant::WPCS_DOMAIN_NAME_META]));
     }
 }

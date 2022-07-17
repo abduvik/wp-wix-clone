@@ -1,11 +1,13 @@
 <?php
 
+namespace WixCloneHost\Core;
+
 class HttpService
 {
     private string $auth_keys;
     private string $base_uri;
 
-    public function __construct($auth_keys, $base_uri)
+    public function __construct($base_uri, $auth_keys)
     {
         $this->auth_keys = $auth_keys;
         $this->base_uri = $base_uri;

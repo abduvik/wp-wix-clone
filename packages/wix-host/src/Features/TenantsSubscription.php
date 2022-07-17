@@ -1,16 +1,23 @@
 <?php
 
-use WPCS\API\CreateTenantRequest;
-use WPCS\API\DeleteTenantRequest;
-use WPCS\API\GetTenantsRequest;
-use WPCSWooSubscriptions\Core\TenantsSubscriptionController;
+namespace WixCloneHost\Features;
+
+use Exception;
+use WixCloneHost\Core\EncryptionService;
+use WixCloneHost\Core\WPCSService;
+use WixCloneHost\Core\WPCSTenant;
 
 class TenantsSubscription
 {
-    public function __construct()
-    {
-        add_action('wps_sfw_after_created_subscription', [$this, 'create_tenant_when_subscription_created'], 10, 2);
+    private WPCSService $wpcsService;
+    private EncryptionService $encryptionService;
 
+    public function __construct(WPCSService $wpcsService, EncryptionService $encryptionService)
+    {
+        $this->wpcsService = $wpcsService;
+        $this->encryptionService = $encryptionService;
+
+        add_action('wps_sfw_after_created_subscription', [$this, 'create_tenant_when_subscription_created'], 10, 2);
 //        add_action('wps_sfw_subscription_cancel', [$this, 'remove_tenant_when_subscription_expired']);
         add_action('wps_sfw_expire_subscription_scheduler', [$this, 'remove_tenant_when_subscription_expired']);
     }
@@ -18,41 +25,57 @@ class TenantsSubscription
     public function create_tenant_when_subscription_created($subscription_id, $order_id)
     {
         $order = new WC_Order($order_id);
-        $product = reset($order->get_items());
-        $wpcs_version_id = get_post_meta($product->get_product_id(), WooCommerceMetaBoxes::WPCS_PRODUCT_VERSION, true);
-        $websiteName = get_post_meta($order_id, TenantsSubscriptionController::WPCS_WEBSITE_NAME, true);
+        $order_items = $order->get_items();
+        $product = reset($order_items);
+        $wpcs_version_id = get_post_meta($product->get_product_id(), WPCSTenant::WPCS_PRODUCT_VERSION_META, true);
+        $website_name = get_post_meta($order_id, WPCSTenant::WPCS_WEBSITE_NAME_META, true);
+        $domain_name = get_post_meta($order_id, WPCSTenant::WPCS_DOMAIN_NAME_META, true);
         $password = wp_generate_password();
 
-        $response = (new CreateTenantRequest())
-            ->setVersionId($wpcs_version_id)
-            ->setTenantName($order->get_formatted_billing_full_name())
-            ->setTenantEmail($order->get_billing_email())
-            ->setTenantPassword($password)
-            ->setName($websiteName)
-            ->setTenantUserRole('administrator')
-            ->send();
+        try {
+            $args = [
+                'version_id' => $wpcs_version_id,
+                'name' => $website_name,
+                'tenant_name' => $order->get_formatted_billing_full_name(),
+                'tenant_email' => $order->get_billing_email(),
+                'tenant_password' => $password,
+                'tenant_user_role' => 'administrator',
+            ];
 
-        update_post_meta($subscription_id, 'WPCS_TENANT_ID', $response->id);
+            if ($domain_name) {
+                $args['customDomainName'] = $domain_name;
+            }
 
-        echo $response->id;
+            $new_tenant = $this->wpcsService->create_tenant($args);
 
-        sleep(5);
+            $keys = $this->encryptionService->generate_key_pair();
 
-        $tenant = (new GetTenantsRequest())
-            ->setTenantId($response->id)
-            ->send();
+            update_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_EXTERNAL_ID_META, $new_tenant->externalId);
+            update_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_PUBLIC_KEY_META, $keys['public_key']);
+            update_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_PRIVATE_KEY_META, $keys['private_key']);
 
-        $tenant = $tenant[0];
+            $this->send_created_email([
+                'email' => $order->get_billing_email(),
+                'password' => $password,
+                'domain' => $new_tenant->baseDomain
+            ]);
 
-        wp_mail($order->get_billing_email(), 'Your website is being created', "
+        } catch (Exception $e) {
+
+        }
+    }
+
+    public function send_created_email($args)
+    {
+        wp_mail($args['email'], 'Your website is being created', "
         <!doctype html>
         <html lang='en'>
         <body>
             <p>Hello,</p>
             <p>You can now login here to your new website</p>
-            <p><strong>Admin Url</strong>: <a href='https://{$tenant->domainName}/wp-admin'>https://{$tenant->domainName}/wp-admin</a></p>
-            <p><strong>Email</strong> : {$order->get_billing_email()}</p>
-            <p><strong>Password</strong> : {$password}</p>
+            <p><strong>Admin Url</strong>: <a href='https://{$args['domain']}/wp-admin'>https://{$args['domain']}/wp-admin</a></p>
+            <p><strong>Email</strong> : {$args['email']}</p>
+            <p><strong>Password</strong> : {$args['password']}</p>
         </body>
         </html>
         ", ['Content-Type: text/html; charset=UTF-8']);
@@ -60,9 +83,9 @@ class TenantsSubscription
 
     public function remove_tenant_when_subscription_expired($subscription_id)
     {
-        $tenant_id = get_post_meta($subscription_id, 'WPCS_TENANT_ID', true);
-        (new DeleteTenantRequest())
-            ->setTenantId($tenant_id)
-            ->send();
+        $tenant_external_id = get_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_EXTERNAL_ID_META, true);
+        $this->wpcsService->delete_tenant([
+            'external_id' => $tenant_external_id
+        ]);
     }
 }

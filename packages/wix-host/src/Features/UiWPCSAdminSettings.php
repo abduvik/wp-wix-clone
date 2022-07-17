@@ -2,7 +2,7 @@
 
 namespace WixCloneHost\Features;
 
-class WPCSAdminSettings
+class UiWPCSAdminSettings
 {
     public function __construct()
     {

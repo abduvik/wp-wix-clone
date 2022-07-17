@@ -2,7 +2,7 @@
 
 namespace WixCloneHost\Features;
 
-class AccountSubscriptionsSettings
+class UiAccountSubscriptionsSettings
 {
     public function __construct()
     {

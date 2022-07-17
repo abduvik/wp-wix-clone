@@ -7,3 +7,14 @@ Author: Abdu Tawfik
 Version: 1.0.0
 Author URI: https://www.abdu.dev
 */
+
+use WixCloneClient\Features\SecureHostConnection;
+use WixCloneClient\Core\HttpService;
+
+define('WIX_MAIN_HOST_URL', get_option('wix_host_website_url'));
+define('WIX_HOST_PUBLIC_KEYS', get_option('tenant_public_key'));
+
+
+$httpService = new HttpService(WIX_MAIN_HOST_URL . '/wp-json/wpcs');
+
+new SecureHostConnection($httpService);
