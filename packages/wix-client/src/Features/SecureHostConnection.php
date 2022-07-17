@@ -6,7 +6,7 @@ use WixCloneClient\Core\HttpService;
 
 class SecureHostConnection
 {
-    public static string $TENANT_PUBLIC_KEY = 'TENANT_PUBLIC_KEY';
+    public const TENANT_PUBLIC_KEY = 'TENANT_PUBLIC_KEY';
 
     public HttpService $httpService;
 
@@ -22,6 +22,6 @@ class SecureHostConnection
 
         $public_key = $response->public_key;
 
-        update_option('tenant_public_key', $public_key);
+        update_option(static::TENANT_PUBLIC_KEY, $public_key);
     }
 }

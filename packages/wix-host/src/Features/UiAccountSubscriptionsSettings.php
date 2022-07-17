@@ -3,6 +3,7 @@
 namespace WixCloneHost\Features;
 
 use Exception;
+use WC_Order;
 use WixCloneHost\Core\WPCSService;
 use WixCloneHost\Core\WPCSTenant;
 
@@ -18,9 +19,14 @@ class UiAccountSubscriptionsSettings
         add_action('wps_sfw_subscription_details_html', [$this, 'render_edit_domain'], 1, 30);
     }
 
-    public function render_single_login()
+    public function render_single_login($subscription_id)
     {
-        echo '<a class="button">Login as: a@s.com <span class="dashicons dashicons-admin-network"></span></a>';
+        $get_order_id = get_post_meta($subscription_id, 'wps_parent_order', true);
+        $order = new WC_Order($get_order_id);
+        $email = $order->get_billing_email();
+        $loginLink = '/wp-json/wpcs/v1/tenant/single_login?subscription_id=' . $subscription_id . '&email=' . $email;
+
+        echo "<a href='$loginLink' target='_blank' class='button'>Login as: $email <span class='dashicons dashicons-admin-network'></span></a>";
     }
 
     public function render_edit_domain($subscription_id)

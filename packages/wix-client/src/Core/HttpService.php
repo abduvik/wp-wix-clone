@@ -4,7 +4,6 @@ namespace WixCloneClient\Core;
 
 class HttpService
 {
-    private string $auth_keys;
     private string $base_uri;
 
     public function __construct($base_uri)
@@ -14,11 +13,7 @@ class HttpService
 
     public function get($uri)
     {
-        $response = wp_remote_get($this->base_uri . $uri, [
-            'headers' => [
-                'Authorization' => "Basic " . base64_encode($this->auth_keys),
-            ]
-        ]);
+        $response = wp_remote_get($this->base_uri . $uri);
 
         return json_decode($response['body']);
     }

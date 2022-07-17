@@ -24,6 +24,7 @@ class UiWcTenantsCheckout
             'label' => 'Domain Name',
             'required' => false,
             'priority' => 21,
+            'placeholder' => 'www.example.com'
         ];
 
         return $fields;

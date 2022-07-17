@@ -1,5 +1,6 @@
 <?php
 
+use WixCloneHost\Api\SingleLogin;
 use WixCloneHost\Api\TenantsAuthKeys;
 use WixCloneHost\Core\EncryptionService;
 use WixCloneHost\Core\HttpService;
@@ -34,6 +35,7 @@ $wpcsService = new WPCSService($http_service);
 $encryptionService = new EncryptionService();
 
 new TenantsAuthKeys();
+new SingleLogin($encryptionService);
 new TenantsSubscription($wpcsService, $encryptionService);
 new UiWPCSAdminSettings();
 new UiAccountSubscriptionsSettings($wpcsService);

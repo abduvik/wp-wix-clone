@@ -25,26 +25,20 @@ class WPCSTenant
      */
     public static function from_wpcs_external_id(string $wpcs_external_id)
     {
-        $args = array(
-            'meta_query' => array(
-                array(
-                    'key' => static::WPCS_TENANT_EXTERNAL_ID_META,
-                    'value' => $wpcs_external_id
-                )
-            ),
-            'post_type' => 'wps_subscriptions',
-            'posts_per_page' => '1'
-        );
+        global $wpdb;
 
-        $subscription = get_posts($args);
+        $tbl = $wpdb->prefix . 'postmeta';
+        $prepare_guery = $wpdb->prepare("SELECT post_id FROM $tbl where meta_key ='" . static::WPCS_TENANT_EXTERNAL_ID_META . "' and meta_value = '%s'", $wpcs_external_id);
+        $get_values = $wpdb->get_col($prepare_guery);
+
         // check results ##
-        if (!$subscription || is_wp_error($subscription)) {
+        if (count($get_values) !== 1) {
             throw new Exception("not found");
         }
 
-        $subscription = $subscription[0];
+        $subscription_id = $get_values[0];
 
-        return new WPCSTenant($subscription->ID);
+        return new WPCSTenant($subscription_id);
     }
 
     public function get_auth_keys(): array
