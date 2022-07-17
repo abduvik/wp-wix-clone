@@ -25,6 +25,7 @@ class WPCSService
             'tenantEmail' => $args['tenant_email'],
             'tenantPassword' => $args['tenant_password'],
             'tenantUserRole' => $args['tenant_user_role'],
+            'customDomainName' => $args['custom_domain_name']
         ]);
     }
 

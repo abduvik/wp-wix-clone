@@ -44,7 +44,7 @@ class TenantsSubscription
             ];
 
             if ($domain_name) {
-                $args['customDomainName'] = $domain_name;
+                $args['custom_domain_name'] = $domain_name;
             }
 
             $new_tenant = $this->wpcsService->create_tenant($args);
