@@ -30,8 +30,9 @@ class HttpService
             'method' => 'POST',
             'headers' => [
                 'Authorization' => "Basic " . base64_encode($this->auth_keys),
+                'Content-Type' => 'application/json',
             ],
-            'body' => $data
+            'body' => json_encode($data)
         ]);
 
         return json_decode($response['body']);

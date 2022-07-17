@@ -6,6 +6,7 @@ use WixCloneHost\Core\HttpService;
 use WixCloneHost\Core\WPCSService;
 use WixCloneHost\Features\TenantsSubscription;
 use WixCloneHost\Features\UiAccountSubscriptionsSettings;
+use WixCloneHost\Features\UiWcTenantsCheckout;
 use WixCloneHost\Features\UiWcWPCSProductVersions;
 use WixCloneHost\Features\UiWPCSAdminSettings;
 
@@ -35,6 +36,7 @@ $encryptionService = new EncryptionService();
 new TenantsAuthKeys();
 new TenantsSubscription($wpcsService, $encryptionService);
 new UiWPCSAdminSettings();
-new UiAccountSubscriptionsSettings();
+new UiAccountSubscriptionsSettings($wpcsService);
 new UiWcWPCSProductVersions($wpcsService);
+new UiWcTenantsCheckout();
 

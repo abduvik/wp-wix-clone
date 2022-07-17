@@ -35,7 +35,7 @@ class WPCSService
 
     public function update_tenant_domain($args)
     {
-        return $this->httpService->post('/v1/tenants?externalId=' . $args['external_id'], [
+        return $this->httpService->post('/v1/tenants/domains?externalId=' . $args['external_id'], [
             'setAsMainDomain' => true,
             'domainName' => $args['domain_name'],
         ]);

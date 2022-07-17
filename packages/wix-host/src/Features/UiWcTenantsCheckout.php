@@ -4,7 +4,7 @@ namespace WixCloneHost\Features;
 
 use WixCloneHost\Core\WPCSTenant;
 
-class WCTenantsCheckout
+class UiWcTenantsCheckout
 {
     public function __construct()
     {
@@ -14,14 +14,14 @@ class WCTenantsCheckout
 
     public function render_wpcs_checkout_fields($fields)
     {
-        $fields['billing'][static::WPCS_WEBSITE_NAME_META] = [
+        $fields['billing'][WPCSTenant::WPCS_WEBSITE_NAME_META] = [
             'label' => 'Website Name',
             'required' => true,
             'priority' => 20,
         ];
 
-        $fields['billing'][static::WPCS_DOMAIN_NAME_META] = [
-            'label' => 'Domain Name (optional)',
+        $fields['billing'][WPCSTenant::WPCS_DOMAIN_NAME_META] = [
+            'label' => 'Domain Name',
             'required' => false,
             'priority' => 21,
         ];

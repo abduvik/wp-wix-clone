@@ -3,6 +3,7 @@
 namespace WixCloneHost\Features;
 
 use Exception;
+use WC_Order;
 use WixCloneHost\Core\EncryptionService;
 use WixCloneHost\Core\WPCSService;
 use WixCloneHost\Core\WPCSTenant;
@@ -47,11 +48,13 @@ class TenantsSubscription
             }
 
             $new_tenant = $this->wpcsService->create_tenant($args);
-
             $keys = $this->encryptionService->generate_key_pair();
+
+            $new_tenant_domain = $domain_name ?: $new_tenant->baseDomain;
 
             update_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_EXTERNAL_ID_META, $new_tenant->externalId);
             update_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_PUBLIC_KEY_META, $keys['public_key']);
+            update_post_meta($subscription_id, WPCSTenant::WPCS_DOMAIN_NAME_META, $new_tenant_domain);
             update_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_PRIVATE_KEY_META, $keys['private_key']);
 
             $this->send_created_email([
@@ -61,7 +64,7 @@ class TenantsSubscription
             ]);
 
         } catch (Exception $e) {
-
+            print_r($e);
         }
     }
 
