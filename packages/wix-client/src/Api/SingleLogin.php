@@ -30,10 +30,11 @@ class SingleLogin
 
     public function verify_single_login(WP_REST_Request $request)
     {
-        $token_encoded = urlencode($_GET['token']);
+        $token_encoded = urlencode($request->get_param('token'));
         $token_decoded = base64_decode(urldecode($token_encoded));
         $public_key = WIX_HOST_PUBLIC_KEYS;
         $data = $this->decryptionService->decrypt($public_key, $token_decoded);
+
         if (!$data) {
             return new WP_Error('Critical Failure');
         }
@@ -41,6 +42,10 @@ class SingleLogin
         $data = json_decode($data);
         $user_email = $data->email;
         $user = get_user_by_email($user_email);
+
+        if (!$user) {
+            return new WP_Error('User not found');
+        }
 
         wp_clear_auth_cookie();
         wp_set_current_user($user->ID);
