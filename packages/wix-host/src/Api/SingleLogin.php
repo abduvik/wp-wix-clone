@@ -46,6 +46,10 @@ class SingleLogin
         $email = $request->get_param('email');
 
         $domain = get_post_meta($subscription_id, WPCSTenant::WPCS_DOMAIN_NAME_META, true);
+        $base_domain = get_post_meta($subscription_id, WPCSTenant::WPCS_BASE_DOMAIN_NAME_META, true);
+
+        $domain = $domain ?: $base_domain;
+
         $private_key = get_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_PRIVATE_KEY_META, true);
 
         $login_data = [

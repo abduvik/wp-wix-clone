@@ -18,15 +18,23 @@ class WPCSService
 
     public function create_tenant($args)
     {
-        return $this->httpService->post('/v1/tenants', [
+        $payload = [
             'versionId' => $args['version_id'],
             'name' => $args['name'],
             'tenantName' => $args['tenant_name'],
             'tenantEmail' => $args['tenant_email'],
             'tenantPassword' => $args['tenant_password'],
-            'tenantUserRole' => $args['tenant_user_role'],
-            'customDomainName' => $args['custom_domain_name']
-        ]);
+            'tenantUserRole' => $args['tenant_user_role']
+        ];
+
+        if (isset($args['custom_domain_name'])) {
+            $payload['customDomainName'] = $args['custom_domain_name'];
+        }
+
+        // @todo: to be removed
+        error_log(print_r($payload, true));
+
+        return $this->httpService->post('/v1/tenants', $payload);
     }
 
     public function delete_tenant($args)
@@ -34,11 +42,19 @@ class WPCSService
         return $this->httpService->delete('/v1/tenants?tenantId=' . $args['external_id']);
     }
 
-    public function update_tenant_domain($args)
+    public function add_tenant_domain($args)
     {
-        return $this->httpService->post('/v1/tenants/domains?externalId=' . $args['external_id'], [
+        $this->httpService->post('/v1/tenants/domains?externalId=' . $args['external_id'], [
             'setAsMainDomain' => true,
             'domainName' => $args['domain_name'],
         ]);
+    }
+
+    public function delete_tenant_domain($args)
+    {
+        $url = '/v1/tenants/domains?externalId=' . $args['external_id'] . "&domainName=" . $args['old_domain_name'];
+        error_log('domain delete');
+        error_log($url);
+        $this->httpService->delete($url);
     }
 }

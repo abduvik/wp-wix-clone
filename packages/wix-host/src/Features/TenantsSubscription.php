@@ -36,7 +36,7 @@ class TenantsSubscription
         try {
             $args = [
                 'version_id' => $wpcs_version_id,
-                'name' => $website_name,
+                'name' => sanitize_text_field($website_name),
                 'tenant_name' => $order->get_formatted_billing_full_name(),
                 'tenant_email' => $order->get_billing_email(),
                 'tenant_password' => $password,
@@ -44,17 +44,16 @@ class TenantsSubscription
             ];
 
             if ($domain_name) {
-                $args['custom_domain_name'] = $domain_name;
+                $args['custom_domain_name'] = sanitize_text_field($domain_name);
             }
 
             $new_tenant = $this->wpcsService->create_tenant($args);
             $keys = $this->encryptionService->generate_key_pair();
 
-            $new_tenant_domain = $domain_name ?: $new_tenant->baseDomain;
-
             update_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_EXTERNAL_ID_META, $new_tenant->externalId);
             update_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_PUBLIC_KEY_META, $keys['public_key']);
-            update_post_meta($subscription_id, WPCSTenant::WPCS_DOMAIN_NAME_META, $new_tenant_domain);
+            update_post_meta($subscription_id, WPCSTenant::WPCS_DOMAIN_NAME_META, sanitize_text_field($domain_name));
+            update_post_meta($subscription_id, WPCSTenant::WPCS_BASE_DOMAIN_NAME_META, $new_tenant->baseDomain);
             update_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_PRIVATE_KEY_META, $keys['private_key']);
 
             $this->send_created_email([

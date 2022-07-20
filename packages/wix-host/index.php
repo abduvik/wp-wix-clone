@@ -41,4 +41,3 @@ new UiWPCSAdminSettings();
 new UiAccountSubscriptionsSettings($wpcsService);
 new UiWcWPCSProductVersions($wpcsService);
 new UiWcTenantsCheckout();
-

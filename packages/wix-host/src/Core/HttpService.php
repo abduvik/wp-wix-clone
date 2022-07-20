@@ -2,6 +2,8 @@
 
 namespace WixCloneHost\Core;
 
+use PHPUnit\Util\Exception;
+
 class HttpService
 {
     private string $auth_keys;
@@ -21,6 +23,10 @@ class HttpService
             ]
         ]);
 
+        if (is_wp_error($response)) {
+            throw new Exception("Failed");
+        }
+
         return json_decode($response['body']);
     }
 
@@ -35,6 +41,28 @@ class HttpService
             'body' => json_encode($data)
         ]);
 
+        if (is_wp_error($response)) {
+            throw new Exception("Failed");
+        }
+
+        return json_decode($response['body']);
+    }
+
+    public function put($uri, $data)
+    {
+        $response = wp_remote_post($this->base_uri . $uri, [
+            'method' => 'PUT',
+            'headers' => [
+                'Authorization' => "Basic " . base64_encode($this->auth_keys),
+                'Content-Type' => 'application/json',
+            ],
+            'body' => json_encode($data)
+        ]);
+
+        if (is_wp_error($response)) {
+            throw new Exception("Failed");
+        }
+
         return json_decode($response['body']);
     }
 
@@ -46,6 +74,12 @@ class HttpService
                 'Authorization' => "Basic " . base64_encode($this->auth_keys),
             ],
         ]);
+
+        error_log(print_r($response, true));
+
+        if (is_wp_error($response)) {
+            throw new Exception("Failed");
+        }
 
         return json_decode($response['body']);
     }

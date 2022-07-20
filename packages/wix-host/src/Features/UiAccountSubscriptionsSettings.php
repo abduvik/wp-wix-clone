@@ -17,6 +17,7 @@ class UiAccountSubscriptionsSettings
 
         add_action('wps_sfw_subscription_details_html', [$this, 'render_single_login'], 1, 25);
         add_action('wps_sfw_subscription_details_html', [$this, 'render_edit_domain'], 1, 30);
+        add_action('remove_tenant_old_domain', [$this, 'remove_tenant_old_domain'], 1, 2);
     }
 
     public function render_single_login($subscription_id)
@@ -33,12 +34,15 @@ class UiAccountSubscriptionsSettings
     {
         $this->handle_update_subscription_domain($subscription_id);
         $domain_name = get_post_meta($subscription_id, WPCSTenant::WPCS_DOMAIN_NAME_META, true);
+        $base_domain_name = get_post_meta($subscription_id, WPCSTenant::WPCS_BASE_DOMAIN_NAME_META, true);
+
+        $domain_name = $domain_name ?: $base_domain_name;
 
         echo '<h4>Website Details</h4>';
         echo "<form method='post' action=''>
                 <p class='woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide'>
                     <label for='account_email'>Domain Name (optional)</label>
-                    <input type='text' placeholder='www.example.com' class='woocommerce-Input woocommerce-Input--email input-text' name='domain_name' id='domain_name' value='$domain_name'>
+                    <input type='text' placeholder='example.com' class='woocommerce-Input woocommerce-Input--email input-text' name='domain_name' id='domain_name' value='$domain_name'>
 	            </p>
 	            <button class='button' type='submit'>Update</button>
 	           </form><br /><br />";
@@ -63,15 +67,26 @@ class UiAccountSubscriptionsSettings
         $domain = sanitize_text_field($_POST['domain_name']);
 
         $tenant_external_id = get_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_EXTERNAL_ID_META, true);
+        $tenant_current_domain_name = get_post_meta($subscription_id, WPCSTenant::WPCS_DOMAIN_NAME_META, true);
 
         try {
-            $this->wpcsService->update_tenant_domain([
+            $this->wpcsService->add_tenant_domain([
                 'external_id' => $tenant_external_id,
                 'domain_name' => $domain,
             ]);
 
             update_post_meta($subscription_id, WPCSTenant::WPCS_DOMAIN_NAME_META, $domain);
+
+            wp_schedule_single_event(time() + 120, 'remove_tenant_old_domain', [$tenant_external_id, $tenant_current_domain_name]);
         } catch (Exception $e) {
         }
+    }
+
+    public function remove_tenant_old_domain($external_id, $old_domain_name)
+    {
+        $this->wpcsService->delete_tenant_domain([
+            'external_id' => $external_id,
+            'old_domain_name' => $old_domain_name,
+        ]);
     }
 }
