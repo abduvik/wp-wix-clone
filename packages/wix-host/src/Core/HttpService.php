@@ -74,9 +74,7 @@ class HttpService
                 'Authorization' => "Basic " . base64_encode($this->auth_keys),
             ],
         ]);
-
-        error_log(print_r($response, true));
-
+        
         if (is_wp_error($response)) {
             throw new Exception("Failed");
         }

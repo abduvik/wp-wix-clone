@@ -31,9 +31,6 @@ class WPCSService
             $payload['customDomainName'] = $args['custom_domain_name'];
         }
 
-        // @todo: to be removed
-        error_log(print_r($payload, true));
-
         return $this->httpService->post('/v1/tenants', $payload);
     }
 
@@ -53,8 +50,6 @@ class WPCSService
     public function delete_tenant_domain($args)
     {
         $url = '/v1/tenants/domains?externalId=' . $args['external_id'] . "&domainName=" . $args['old_domain_name'];
-        error_log('domain delete');
-        error_log($url);
         $this->httpService->delete($url);
     }
 }
