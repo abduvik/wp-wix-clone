@@ -11,8 +11,8 @@ rm -rf build/wix-client/vendor
 (cd build/wix-client && composer install --no-dev)
 
 
-zip -r build/wix-host.zip build/wix-host
-zip -r build/wix-client.zip build/wix-client
+(cd build && zip -r wix-host.zip wix-host)
+(cd build && zip -r wix-client.zip wix-client)
 
 rm -rf build/wix-host
 rm -rf build/wix-client
