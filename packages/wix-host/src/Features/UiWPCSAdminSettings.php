@@ -87,7 +87,7 @@ class UiWPCSAdminSettings
 
     function render_settings_field($args)
     {
-        echo "<input type='{$args["type"]}' id'{$args["id"]}' name='{$args["id"]}' value=" . get_option($args["id"]) . ">";
+        echo "<input type='{$args["type"]}' id'{$args["id"]}' name='{$args["id"]}' value='" . get_option($args["id"]) . "'>";
     }
 }
 
