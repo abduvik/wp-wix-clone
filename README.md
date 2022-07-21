@@ -29,3 +29,11 @@ fswatch -o packages/wix-host | xargs -n1 -I{} rsync -a packages/wix-host dist/ho
 ```shell
 fswatch -o packages/wix-client | xargs -n1 -I{} rsync -a packages/wix-client dist/client/plugins
 ```
+
+## Building
+
+Run the following command to build the plugins
+
+```shell
+bash scripts/build.sh
+```

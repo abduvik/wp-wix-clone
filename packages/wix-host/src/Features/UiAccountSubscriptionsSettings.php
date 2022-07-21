@@ -60,14 +60,14 @@ class UiAccountSubscriptionsSettings
 
     public function handle_update_subscription_domain($subscription_id)
     {
-        if (!isset($_POST['domain_name'])) {
-            return;
-        }
-
         $domain = sanitize_text_field($_POST['domain_name']);
 
         $tenant_external_id = get_post_meta($subscription_id, WPCSTenant::WPCS_TENANT_EXTERNAL_ID_META, true);
         $tenant_current_domain_name = get_post_meta($subscription_id, WPCSTenant::WPCS_DOMAIN_NAME_META, true);
+
+        if (!isset($_POST['domain_name']) || $_POST['domain_name'] === $tenant_current_domain_name) {
+            return;
+        }
 
         try {
             $this->wpcsService->add_tenant_domain([
@@ -77,7 +77,9 @@ class UiAccountSubscriptionsSettings
 
             update_post_meta($subscription_id, WPCSTenant::WPCS_DOMAIN_NAME_META, $domain);
 
-            wp_schedule_single_event(time() + 120, 'remove_tenant_old_domain', [$tenant_external_id, $tenant_current_domain_name]);
+            if ($tenant_current_domain_name) {
+                wp_schedule_single_event(time() + 300, 'remove_tenant_old_domain', [$tenant_external_id, $tenant_current_domain_name]);
+            }
         } catch (Exception $e) {
         }
     }

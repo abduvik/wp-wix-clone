@@ -19,8 +19,10 @@ class TenantsSubscription
         $this->encryptionService = $encryptionService;
 
         add_action('wps_sfw_after_created_subscription', [$this, 'create_tenant_when_subscription_created'], 10, 2);
-//        add_action('wps_sfw_subscription_cancel', [$this, 'remove_tenant_when_subscription_expired']);
-        add_action('wps_sfw_expire_subscription_scheduler', [$this, 'remove_tenant_when_subscription_expired']);
+
+        // @todo: This can be exchanged for the demo
+        add_action('wps_sfw_subscription_cancel', [$this, 'remove_tenant_when_subscription_expired']);
+//        add_action('wps_sfw_expire_subscription_scheduler', [$this, 'remove_tenant_when_subscription_expired']);
     }
 
     public function create_tenant_when_subscription_created($subscription_id, $order_id)
@@ -40,7 +42,7 @@ class TenantsSubscription
                 'tenant_name' => $order->get_formatted_billing_full_name(),
                 'tenant_email' => $order->get_billing_email(),
                 'tenant_password' => $password,
-                'tenant_user_role' => 'administrator',
+                'tenant_user_role' => 'editor',
             ];
 
             if ($domain_name) {

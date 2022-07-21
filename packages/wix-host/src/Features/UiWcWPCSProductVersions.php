@@ -41,6 +41,7 @@ class UiWcWPCSProductVersions
 
         echo '<label for="wporg_field">WPCS Version</label>';
         echo "<select name=" . WPCSTenant::WPCS_PRODUCT_VERSION_META . " class='postbox'>";
+        echo '<option value="">-- Select version --</option>';
         foreach ($available_versions as $version) {
             echo selected($version->name, $current_version);
             echo "<option " . selected($version->id, $current_version) . "value='$version->id'>$version->name</option>";
