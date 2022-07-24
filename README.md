@@ -4,7 +4,7 @@ This is a Wix Clone build using various technologies to illustrate how easy it i
 
 ## [YouTube Video](http://www.youtube.com/watch?v=shEh0-P7pz0)
 
-[![Building Wix SaaS Clone using WordPress, WooCommerce, WPCS & k8s](http://img.youtube.com/vi/######/0.jpg)](http://www.youtube.com/watch?v=###### "Building Wix SaaS Clone using WordPress, WooCommerce, WPCS & k8s")
+[![Building Wix SaaS Clone using WordPress, WooCommerce, WPCS & k8s](http://img.youtube.com/vi/Sa_38G-pp0o/0.jpg)](http://www.youtube.com/watch?v=Sa_38G-pp0o "Building Wix SaaS Clone using WordPress, WooCommerce, WPCS & k8s")
 
 ## Local Development
 
