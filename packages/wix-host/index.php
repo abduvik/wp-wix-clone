@@ -20,9 +20,9 @@ require_once 'vendor/autoload.php';
 /*
 Plugin Name: Wix-Clone Host
 Plugin URI: https://github.com/abduvik/wp-wix-clone
-Description: This plugin is used to create tenants on WPCS.io with support of WordPress, WooCommerce and YITH Subscriptions
+Description: This plugin is used to create tenants on WPCS.io with support of WordPress, WooCommerce and Subscriptions for WooCommerce
 Author: Abdu Tawfik
-Version: 1.0.0
+Version: 1.0.1
 Author URI: https://www.abdu.dev
 */
 
